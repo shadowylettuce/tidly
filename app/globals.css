@@ -1,5 +1,114 @@
 @import "tailwindcss";
 
+/* ── CALENDAR DARK THEME ── */
+.rbc-calendar {
+  background-color: #111827;
+  color: white;
+}
+.rbc-header {
+  background-color: #1f2937;
+  color: white;
+  border-color: #374151;
+}
+.rbc-month-view, .rbc-time-view {
+  border-color: #374151;
+}
+.rbc-day-bg {
+  border-color: #374151;
+}
+.rbc-off-range-bg {
+  background-color: #0f172a;
+}
+.rbc-today {
+  background-color: #1e3a5f;
+}
+.rbc-event {
+  background-color: #2563eb;
+}
+.rbc-toolbar button {
+  color: white;
+  border-color: #374151;
+}
+.rbc-toolbar button:hover {
+  background-color: #374151;
+}
+.rbc-date-cell {
+  color: #9ca3af;
+}
+
+.rbc-month-row {
+  border-color: #374151;
+}
+.rbc-day-bg + .rbc-day-bg {
+  border-color: #374151;
+}
+.rbc-header + .rbc-header {
+  border-color: #374151;
+}
+.rbc-off-range {
+  color: #4b5563;
+}
+.rbc-show-more {
+  color: #60a5fa;
+  background-color: transparent;
+}
+.rbc-toolbar {
+  color: white;
+}
+.rbc-toolbar button:focus,
+.rbc-toolbar button.rbc-active {
+  background-color: #374151;
+  color: white;
+  border-color: #4b5563;
+}
+.rbc-time-content {
+  border-color: #374151;
+}
+.rbc-time-header {
+  border-color: #374151;
+}
+.rbc-timeslot-group {
+  border-color: #374151;
+}
+.rbc-time-slot {
+  color: #9ca3af;
+}
+.rbc-current-time-indicator {
+  background-color: #2563eb;
+}
+
+/* Fix today highlight */
+.rbc-today {
+  background-color: #1e3a5f !important;
+}
+
+/* Fix off-range days (days not in current month) */
+.rbc-off-range-bg {
+  background-color: #0f172a !important;
+}
+
+/* Fix active Month/Week/Day button */
+.rbc-toolbar button.rbc-active {
+  background-color: #2563eb !important;
+  color: white !important;
+  border-color: #2563eb !important;
+}
+
+/* Fix Today, Back, Next button colors */
+.rbc-toolbar button {
+  color: #d1d5db !important;
+  border-color: #4b5563 !important;
+}
+
+.rbc-toolbar button:hover {
+  background-color: #374151 !important;
+  color: white !important;
+}
+
+/* !important overrides the library's default style */
+
+/* ── END CALENDAR DARK THEME ── */
+
 :root {
   --background: #ffffff;
   --foreground: #171717;

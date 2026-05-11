@@ -5,6 +5,7 @@ import { supabase } from "../../../lib/supabase";
 import { useRouter } from "next/navigation";
 
 export default function Appointments() {
+  // ─── STATE ───────────────────────────────────────────────
   const [appointments, setAppointments] = useState([]);
   const [clients, setClients] = useState([]);
   const [clientId, setClientId] = useState("");
@@ -15,24 +16,28 @@ export default function Appointments() {
   const [loading, setLoading] = useState(false);
   const router = useRouter();
 
+  // ─── LIFECYCLE ───────────────────────────────────────────
   useEffect(() => {
     fetchAppointments();
     fetchClients();
   }, []);
 
+  // ─── DATA FETCHING ────────────────────────────────────────
   async function fetchAppointments() {
     const { data } = await supabase
       .from("appointments")
-      .select("*, clients(name, address)") // This is a join, it fetches appointment data along with client data allowing for the use of both tables
+      .select("*, clients(name, address)")
       .order("date", { ascending: true });
     if (data) setAppointments(data);
   }
 
   async function fetchClients() {
-    const { data } = await supabase.from("clients").select("*");
+    const { data, error } = await supabase.from("clients").select("*");
+    console.log("clients data:", data, "error:", error);
     if (data) setClients(data);
   }
 
+  // ─── ACTIONS ──────────────────────────────────────────────
   async function addAppointment() {
     setLoading(true);
     const { error } = await supabase.from("appointments").insert({
@@ -61,9 +66,11 @@ export default function Appointments() {
     fetchAppointments();
   }
 
+  // ─── RENDER ───────────────────────────────────────────────
   return (
     <main className="min-h-screen bg-gray-950 p-8">
       <div className="max-w-4xl mx-auto">
+        {/* ── HEADER ── */}
         <div className="flex justify-between items-center mb-8">
           <h1 className="text-white text-3xl font-bold">Schedule</h1>
           <button
@@ -73,8 +80,9 @@ export default function Appointments() {
             ← Back
           </button>
         </div>
+        {/* ── END HEADER ── */}
 
-        {/* Add Appointment Form */}
+        {/* ── ADD APPOINTMENT FORM ── */}
         <div className="bg-gray-900 p-6 rounded-xl mb-8 flex flex-col gap-4">
           <h2 className="text-white text-xl font-semibold">
             Schedule Appointment
@@ -122,8 +130,9 @@ export default function Appointments() {
             {loading ? "Scheduling..." : "Schedule Appointment"}
           </button>
         </div>
+        {/* ── END ADD APPOINTMENT FORM ── */}
 
-        {/* Appointment List */}
+        {/* ── APPOINTMENT LIST ── */}
         <div className="flex flex-col gap-4">
           {appointments.map((apt) => (
             <div
@@ -167,6 +176,7 @@ export default function Appointments() {
             </div>
           ))}
         </div>
+        {/* ── END APPOINTMENT LIST ── */}
       </div>
     </main>
   );

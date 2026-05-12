@@ -6,7 +6,6 @@ import { format, parse, startOfWeek, getDay } from 'date-fns'
 import { enUS } from 'date-fns/locale'
 import { supabase } from '../../../lib/supabase'
 import { useRouter } from 'next/navigation'
-import 'react-big-calendar/lib/css/react-big-calendar.css'
 
 // ─── CALENDAR SETUP ───────────────────────────────────────
 const localizer = dateFnsLocalizer({

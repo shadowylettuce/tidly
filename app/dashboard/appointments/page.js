@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { format } from "date-fns";
 import { supabase } from "../../../lib/supabase";
 import { useRouter } from "next/navigation";
 
@@ -14,6 +15,7 @@ export default function Appointments() {
   const [price, setPrice] = useState("");
   const [notes, setNotes] = useState("");
   const [loading, setLoading] = useState(false);
+  const [markingPaidId, setMarkingPaidId] = useState(null);
   const router = useRouter();
 
   // ─── LIFECYCLE ───────────────────────────────────────────
@@ -26,15 +28,20 @@ export default function Appointments() {
   async function fetchAppointments() {
     const { data } = await supabase
       .from("appointments")
-      .select("*, clients(name, address)")
+      .select("*, clients(name, address), payments(id, amount, paid, paid_date)")
       .order("date", { ascending: true });
     if (data) setAppointments(data);
   }
 
   async function fetchClients() {
-    const { data, error } = await supabase.from("clients").select("*");
-    console.log("clients data:", data, "error:", error);
+    const { data } = await supabase.from("clients").select("*");
     if (data) setClients(data);
+  }
+
+  function appointmentIsPaid(apt) {
+    const rows = apt.payments;
+    if (!rows || !Array.isArray(rows)) return false;
+    return rows.some((p) => p.paid === true);
   }
 
   // ─── ACTIONS ──────────────────────────────────────────────
@@ -64,6 +71,20 @@ export default function Appointments() {
     if (!confirmed) return;
     await supabase.from("appointments").delete().eq("id", id);
     fetchAppointments();
+  }
+
+  async function markAsPaid(apt) {
+    if (appointmentIsPaid(apt)) return;
+    setMarkingPaidId(apt.id);
+    const today = format(new Date(), "yyyy-MM-dd");
+    const { error } = await supabase.from("payments").insert({
+      appointment_id: apt.id,
+      amount: Number(apt.price) || 0,
+      paid: true,
+      paid_date: today,
+    });
+    setMarkingPaidId(null);
+    if (!error) fetchAppointments();
   }
 
   // ─── RENDER ───────────────────────────────────────────────
@@ -153,10 +174,31 @@ export default function Appointments() {
                 <span className="text-green-400 font-semibold">
                   ${apt.price}
                 </span>
-                <span className="bg-gray-700 text-gray-300 px-2 py-1 rounded text-xs">
-                  {apt.status}
-                </span>
-                <div className="flex gap-2 items-center">
+                <div className="flex flex-wrap items-center justify-end gap-2">
+                  <span
+                    className={`px-2 py-1 rounded text-xs font-bold tracking-wide ${
+                      appointmentIsPaid(apt)
+                        ? "bg-green-900/80 text-green-300"
+                        : "bg-red-900/80 text-red-300"
+                    }`}
+                  >
+                    {appointmentIsPaid(apt) ? "PAID" : "UNPAID"}
+                  </span>
+                  <span className="bg-gray-700 text-gray-300 px-2 py-1 rounded text-xs">
+                    {apt.status}
+                  </span>
+                </div>
+                <div className="flex flex-wrap gap-2 items-center justify-end">
+                  {!appointmentIsPaid(apt) ? (
+                    <button
+                      type="button"
+                      className="bg-emerald-600 text-white px-3 py-1 rounded-lg hover:bg-emerald-500 text-sm disabled:opacity-50"
+                      disabled={markingPaidId === apt.id}
+                      onClick={() => markAsPaid(apt)}
+                    >
+                      {markingPaidId === apt.id ? "Saving…" : "Mark as Paid"}
+                    </button>
+                  ) : null}
                   <button
                     className="bg-blue-600 text-white px-3 py-1 rounded-lg hover:bg-blue-500 text-sm"
                     onClick={() =>

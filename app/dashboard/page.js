@@ -3,7 +3,6 @@
 import { Calendar, dateFnsLocalizer } from "react-big-calendar";
 import { format, parse, startOfWeek, getDay } from "date-fns";
 import { enUS } from "date-fns/locale";
-import "react-big-calendar/lib/css/react-big-calendar.css";
 import { useEffect, useState } from "react";
 import { supabase } from "../../lib/supabase";
 import { useRouter } from "next/navigation";
@@ -125,6 +124,24 @@ export default function Dashboard() {
               💰 Revenue
             </h2>
             <p className="text-gray-400">Track your earnings</p>
+          </div>
+          <div
+            className="bg-gray-900 p-6 rounded-xl cursor-pointer hover:bg-gray-800"
+            onClick={() => router.push("/dashboard/payroll")}
+          >
+            <h2 className="text-white text-xl font-semibold mb-2">
+              💵 Payroll
+            </h2>
+            <p className="text-gray-400">Calculate worker pay</p>
+          </div>
+          <div
+            className="bg-gray-900 p-6 rounded-xl cursor-pointer hover:bg-gray-800"
+            onClick={() => router.push("/dashboard/payments")}
+          >
+            <h2 className="text-white text-xl font-semibold mb-2">
+              💳 Payments
+            </h2>
+            <p className="text-gray-400">Track client payments</p>
           </div>
         </div>
         {/* ── END NAVIGATION CARDS ── */}
